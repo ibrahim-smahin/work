@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الإدارة المالية</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --text-color: #2c3e50;
+            --background-color: #f8f9fa;
+        }
+        /* إضافة هذه التنسيقات إلى الـ CSS */
+.btn {
+    /* التنسيقات الحالية */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+/* تأكد من تطبيق نفس التنسيق على عناصر الـ anchor */
+a.btn {
+    text-decoration: none !important;
+    color: white !important;
+}
+
+/* تأكد من تطبيق تأثيرات الـ hover على جميع الأزرار */
+a.btn:hover, button.btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+            padding: 0 15px;
+        }
+
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 15px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="header">
+        <h1>نظام الإدارة المالية</h1>
+    </header>
+
+    <div id="message" class="alert"></div>
+
+    <div class="grid">
+        <button class="btn" onclick="showForm('حركات')">💼 حركة جديدة</button>
+        <button class="btn" onclick="showForm('السلف')">📝 سلفة</button>
+        <button class="btn" onclick="showForm('الديون')">📉 الديون</button>
+        <button class="btn" onclick="showForm('صيانة')">🔧 صيانة</button>
+        <button class="btn" onclick="showForm('الدفعات')">💵 الدفعات</button>
+        <a class="btn" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTbHOn9s8JTReefeI-ubempAwI_FYJNQyR5cneIzeUFlLK5-FaHwebpbMQs3Jk0_20kB3E7C7iBY-_4/pubhtml" target="_blank">📊 السجل</a>
+    </div>
+
+    <div id="formContainer"></div>
+
+    <script>
+        const CONFIG = {
+            apiEndpoint: 'https://script.google.com/macros/s/AKfycbzlrZ-m9JdvD3a5uzuJvDSpVD3VKKBCMAMMEB5EoefZQW-etrCTRLdkc1-h1EA6B8_wXA/exec',
+            formTemplates: {
+                'حركات': {
+                    title: 'تسجيل حركة جديدة',
+                    fields: [
+                        { type: 'text', name: 'اسم الزبون', label: 'اسم الزبون', required: true },
+                        { type: 'tel', name: 'رقم الهاتف', label: 'رقم الهاتف', required: true },
+                        { type: 'textarea', name: 'ملاحظات', label: 'ملاحظات' }
+                    ]
+                },
+                'السلف': {
+                    title: 'تسجيل سلفة',
+                    fields: [
+                        { type: 'number', name: 'قيمة السلفة', label: 'قيمة السلفة', required: true },
+                        { type: 'textarea', name: 'ملاحظات', label: 'ملاحظات' }
+                    ]
+                },
+                'الديون': {
+                    title: 'تسجيل ديون',
+                    fields: [
+                        { type: 'number', name: 'المبلغ', label: 'القيمة', required: true },
+                        { type: 'textarea', name: 'الوصف', label: 'الوصف', required: true }
+                    ]
+                },
+                'صيانة': {
+                    title: 'أعمال الصيانة',
+                    fields: [
+                        { type: 'number', name: 'المبلغ', label: 'القيمة', required: true },
+                        { type: 'textarea', name: 'الوصف', label: 'الوصف', required: true }
+                    ]
+                },
+                'الدفعات': {
+                    title: 'تسجيل دفعة',
+                    fields: [
+                        { type: 'number', name: 'المبلغ المقبوض', label: 'المبلغ المقبوض', required: true },
+                        { type: 'text', name: 'دورة شهر ', label: 'دورة الدفعة', required: true },
+                        { type: 'number', name: 'المبلغ المتبقي', label: 'المبلغ المتبقي', required: true }
+                    ]
+                }
+            }
+        };
+
+        let isSubmitting = false;
+
+        function showForm(formType) {
+            const template = CONFIG.formTemplates[formType];
+            if (!template) return;
+
+            const formHTML = `
+                <div class="form-container">
+                    <h2>${template.title}</h2>
+                    <form onsubmit="handleSubmit(event, '${formType}')">
+                        ${template.fields.map(field => `
+                            <div class="form-group">
+                                <label class="form-label">${field.label}</label>
+                                ${generateFieldHTML(field)}
+                            </div>
+                        `).join('')}
+                        <button type="submit" class="btn" style="background-color: var(--success-color)">
+                            ✅ إرسال البيانات
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            document.getElementById('formContainer').innerHTML = formHTML;
+        }
+
+        function generateFieldHTML(field) {
+            const commonAttrs = `
+                class="form-input"
+                name="${field.name}"
+                ${field.required ? 'required' : ''}
+                ${field.pattern ? `pattern="${field.pattern}"` : ''}
+                ${field.min ? `min="${field.min}"` : ''}
+            `;
+
+            switch(field.type) {
+                case 'textarea':
+                    return `<textarea ${commonAttrs} rows="3"></textarea>`;
+                default:
+                    return `<input type="${field.type}" ${commonAttrs}>`;
+            }
+        }
+
+        async function handleSubmit(event, formType) {
+            event.preventDefault();
+            if (isSubmitting) return;
+
+            const form = event.target;
+            const formData = new FormData(form);
+            formData.append('formType', formType);
+
+            try {
+                isSubmitting = true;
+                toggleLoading(true);
+
+                const response = await fetch(CONFIG.apiEndpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('فشل في إرسال البيانات');
+                
+                showMessage('تم إرسال البيانات بنجاح!', 'success');
+                form.reset();
+                setTimeout(() => {
+                    document.getElementById('formContainer').innerHTML = '';
+                }, 1500);
+            } catch (error) {
+                showMessage(`حدث خطأ: ${error.message}`, 'error');
+                console.error('Error:', error);
+            } finally {
+                isSubmitting = false;
+                toggleLoading(false);
+            }
+        }
+
+        function showMessage(message, type = 'info') {
+            const alertDiv = document.getElementById('message');
+            alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function toggleLoading(show) {
+            document.querySelector('.loading-overlay').style.display = 
+                show ? 'flex' : 'none';
+        }
+    </script>
+</body>
+</html>
